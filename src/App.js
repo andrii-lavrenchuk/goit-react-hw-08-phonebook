@@ -1,30 +1,53 @@
+import { lazy, Suspense, useEffect } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { authOperations } from './redux/auth';
 import 'react-toastify/dist/ReactToastify.css';
-// import Form from './Components/Form/Form';
-// import ContactList from './Components/ContactList/ContactList';
-// import Filter from './Components/Filter/Filter';
-// import Title from './Components/Title/Title';
 import Container from './Components/Container/Container';
-
 import AppBar from './Components/AppBar';
-import ContactsView from './views/ContactsView/ContactsView';
-import HomeView from './views/HomeView/HomeView';
-import RegisterView from './views/RegisterView/RegisterView';
-import LoginView from './views/LoginView/LoginView';
+
+const HomeView = lazy(
+  () => import('./views/HomeView/HomeView') /* webpackChunkName: "home-view" */,
+);
+
+const RegisterView = lazy(
+  () =>
+    import(
+      './views/RegisterView/RegisterView'
+    ) /* webpackChunkName: "register-view" */,
+);
+
+const ContactsView = lazy(
+  () =>
+    import(
+      './views/ContactsView/ContactsView'
+    ) /* webpackChunkName: "contacts-view" */,
+);
+
+const LoginView = lazy(
+  () =>
+    import('./views/LoginView/LoginView') /* webpackChunkName: "login-view" */,
+);
 
 export default function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(authOperations.getCurrentUser());
+  }, [dispatch]);
+
   return (
     <Container>
       <ToastContainer autoClose={3000} />
       <AppBar />
-
-      <Switch>
-        <Route exact path="/" component={HomeView} />
-        <Route path="/register" component={RegisterView} />
-        <Route path="/login" component={LoginView} />
-        <Route path="/contacts" component={ContactsView} />
-      </Switch>
+      <Suspense fallback={null}>
+        <Switch>
+          <Route exact path="/" component={HomeView} />
+          <Route path="/register" component={RegisterView} />
+          <Route path="/login" component={LoginView} />
+          <Route path="/contacts" component={ContactsView} />
+        </Switch>
+      </Suspense>
       {/* <Title title="Phonebook" />
       <Form />
       <Title title="Contacts" />
