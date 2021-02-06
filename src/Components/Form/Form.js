@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import contactOperations from '../../redux/contacts/contacts-operations';
-
 import s from './Form.module.css';
 import IconButton from '../IconButton/IconButton';
 import { ReactComponent as AddIcon } from '../../icons/add.svg';
+import NumberFormat from 'react-number-format';
 
 export default function Form() {
   const [name, setName] = useState('');
@@ -33,19 +33,17 @@ export default function Form() {
     if (name === '' || number === '') {
       toast.info('Please fill all fields');
       return;
-    } else if (!/\d{3}[-]\d{2}[-]\d{2}/g.test(number)) {
-      toast.error('Enter the correct  phone number');
-      setName('');
-      setNumber('');
-      return;
     }
+    setName('');
+    setNumber('');
+
     dispatch(contactOperations.addContact(name, number));
     setName('');
     setNumber('');
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className={s.form}>
       <label className={s.label}>
         Name
         <input
@@ -58,17 +56,19 @@ export default function Form() {
         ></input>
         <label className={s.label}>
           Number
-          <input
-            className={s.input}
+          <NumberFormat
+            placeholder="Enter phone number"
             type="tel"
+            format="+38 (###) ###-####"
+            allowEmptyFormatting
+            mask="_"
             name="number"
-            placeholder="123-45-67"
             value={number}
             onChange={handleChange}
-          ></input>
+            className={s.input}
+          />
         </label>
       </label>
-
       <IconButton type="submit" aria-label="Add contact">
         <AddIcon width="20" height="20" fill="#fff" />
       </IconButton>
