@@ -3,10 +3,38 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  margin-top: 15px;
+  /* margin-top: 15px; */
+  /* padding: 20px; */
 }
 
 .button {
   margin-top: 15px;
   margin-bottom: 15px;
+}
+
+.form {
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+
+  padding: 20px 0;
+  text-align: center;
+}
+
+.field {
+  width: 320px;
+  margin-bottom: 30px;
+}
+
+.input {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px;
+  margin-bottom: 25px;
+  /* width: 100%; */
+  border: 1px solid rgba(12, 95, 202, 0.2);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 15px;
 }
