@@ -15,7 +15,6 @@ const styles = {
 
 export default function AppBar() {
   const isLoggedIn = useSelector(authSelectors.getIsAuthenticated);
-  // const isLoggedIn = false;
   return (
     <header style={styles.header}>
       <Navigation />
