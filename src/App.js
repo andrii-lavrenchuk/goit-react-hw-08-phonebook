@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { authOperations, authSelectors } from './redux/auth';
 import 'react-toastify/dist/ReactToastify.css';
 import Container from './Components/Container/Container';
-import AppBar from './Components/AppBar';
+import AppBar from './Components/AppBar/AppBar';
 import PrivateRoute from './Components/PrivateRoute';
 import PublicRoute from './Components/PublicRoute';
 
