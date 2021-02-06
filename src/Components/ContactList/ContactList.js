@@ -8,14 +8,11 @@ export default function ContactList() {
   const contacts = useSelector(contactsSelectors.getVisibleContacts);
   const dispatch = useDispatch();
 
-  const fetchContacts = () => dispatch(contactsOperations.fetchContacts());
   const onDeleteContact = id => dispatch(contactsOperations.deleteContact(id));
 
-  useEffect(() => {
-    fetchContacts();
-  }, [dispatch]);
+  useEffect(() => dispatch(contactsOperations.fetchContacts()), [dispatch]);
 
-  return (
+  return contacts.length > 0 ? (
     <ul className={s.list}>
       {contacts.map(({ id, name, number }) => (
         <li className={s.item} key={id}>
@@ -27,5 +24,7 @@ export default function ContactList() {
         </li>
       ))}
     </ul>
+  ) : (
+    <p>EMPTY</p>
   );
 }
