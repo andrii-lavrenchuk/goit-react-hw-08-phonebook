@@ -25,6 +25,6 @@ export default function ContactList() {
       ))}
     </ul>
   ) : (
-    <p>EMPTY</p>
+    <h2>Add your first contact</h2>
   );
 }
