@@ -1,17 +1,11 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { authOperations } from '../../redux/auth';
+import { toast } from 'react-toastify';
 
-const styles = {
-  form: {
-    width: 320,
-  },
-  label: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginBottom: 15,
-  },
-};
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import s from './LogiView.module.css';
 
 export default function LoginView() {
   const dispatch = useDispatch();
@@ -31,6 +25,13 @@ export default function LoginView() {
 
   const handleSubmit = e => {
     e.preventDefault();
+    if (email.trim() === '' || password.trim() === '') {
+      toast.info('Please, fill all fields');
+      return;
+    } else if (password.length < 7) {
+      toast.error('Password must contains at least 7 characters');
+      return;
+    }
     dispatch(authOperations.logIn({ email, password }));
     setEmail('');
     setPassword('');
@@ -38,30 +39,33 @@ export default function LoginView() {
 
   return (
     <div>
-      <h1>Страница логина</h1>
+      <h1>Sign in</h1>
 
-      <form onSubmit={handleSubmit} style={styles.form} autoComplete="off">
-        <label style={styles.label}>
-          Почта
-          <input
-            type="email"
-            name="email"
-            value={email}
-            onChange={handleChange}
-          />
-        </label>
+      <form onSubmit={handleSubmit} className={s.form} autoComplete="off">
+        <TextField
+          label="Email"
+          helperText="*Required"
+          variant="outlined"
+          className={s.field}
+          type="email"
+          name="email"
+          value={email}
+          onChange={handleChange}
+        />
+        <TextField
+          label="Password"
+          helperText="*Required"
+          variant="outlined"
+          className={s.field}
+          type="password"
+          name="password"
+          value={password}
+          onChange={handleChange}
+        />
 
-        <label style={styles.label}>
-          Пароль
-          <input
-            type="password"
-            name="password"
-            value={password}
-            onChange={handleChange}
-          />
-        </label>
-
-        <button type="submit">Войти</button>
+        <Button variant="contained" color="primary" type="submit">
+          Sign in
+        </Button>
       </form>
     </div>
   );
