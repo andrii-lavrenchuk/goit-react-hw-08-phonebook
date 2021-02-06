@@ -1,0 +1,13 @@
+.form {
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+
+  padding: 20px 0;
+  text-align: center;
+}
+
+.field {
+  width: 320px;
+  margin-bottom: 30px;
+}
