@@ -1,5 +1,6 @@
 import axios from 'axios';
 import authActions from './auth-actions';
+import { toast } from 'react-toastify';
 
 axios.defaults.baseURL = 'https://goit-phonebook-api.herokuapp.com';
 
@@ -12,12 +13,6 @@ const token = {
   },
 };
 
-/*
- * POST @ /users/signup
- * body { name, email, password }
- *
- * После успешной регистрации добавляем токен в HTTP-заголовок
- */
 const register = credentials => async dispatch => {
   dispatch(authActions.registerRequest());
 
@@ -29,16 +24,20 @@ const register = credentials => async dispatch => {
     dispatch(authActions.registerSuccess(response.data));
   } catch (error) {
     dispatch(authActions.registerError(error.message));
+
+    if (error.response.status === 400) {
+      toast.error('Please try again!');
+      return;
+    } else if (error.response.status === 500) {
+      toast.error('Oops! Something wrong with server, please try later!');
+      return;
+    } else {
+      toast.error('Something went wrong!');
+      return;
+    }
   }
 };
 
-/*
- * POST @ /users/login
- * body:
- *    { email, password }
- *
- * После успешного логина добавляем токен в HTTP-заголовок
- */
 const logIn = credentials => async dispatch => {
   dispatch(authActions.loginRequest());
   try {
@@ -49,16 +48,11 @@ const logIn = credentials => async dispatch => {
     dispatch(authActions.loginSuccess(response.data));
   } catch (error) {
     dispatch(authActions.loginError(error.message));
+    toast.error('Invalid email or password! Try again!');
+    return;
   }
 };
 
-/*
- * POST @ /users/logout
- * headers:
- *    Authorization: Bearer token
- *
- * 1. После успешного логаута, удаляем токен из HTTP-заголовка
- */
 const logOut = () => async dispatch => {
   dispatch(authActions.logoutRequest());
 
@@ -70,18 +64,16 @@ const logOut = () => async dispatch => {
     dispatch(authActions.logoutSuccess());
   } catch (error) {
     dispatch(authActions.logoutError(error.message));
+    if (error.response.status === 500) {
+      toast.error('Oops! Something wrong with server, please try later!!');
+      return;
+    } else {
+      toast.error('Something went wrong! Please reload the page!');
+      return;
+    }
   }
 };
 
-/*
- * GET @ /users/current
- * headers:
- *    Authorization: Bearer token
- *
- * 1. Забираем токен из стейта через getState()
- * 2. Если токена нет, выходим не выполняя никаких операций
- * 3. Если токен есть, добавляет его в HTTP-заголовок и выполянем операцию
- */
 const getCurrentUser = () => async (dispatch, getState) => {
   const {
     auth: { token: persistedToken },
