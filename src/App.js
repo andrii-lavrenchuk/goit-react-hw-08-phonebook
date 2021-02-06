@@ -1,11 +1,13 @@
 import { lazy, Suspense, useEffect } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import { useDispatch } from 'react-redux';
-import { authOperations } from './redux/auth';
+import { useDispatch, useSelector } from 'react-redux';
+import { authOperations, authSelectors } from './redux/auth';
 import 'react-toastify/dist/ReactToastify.css';
 import Container from './Components/Container/Container';
 import AppBar from './Components/AppBar';
+import PrivateRoute from './Components/PrivateRoute';
+import PublicRoute from './Components/PublicRoute';
 
 const HomeView = lazy(
   () => import('./views/HomeView/HomeView') /* webpackChunkName: "home-view" */,
@@ -32,27 +34,37 @@ const LoginView = lazy(
 
 export default function App() {
   const dispatch = useDispatch();
+  const isFetchingCurrentUser = useSelector(authSelectors.getIsFetchingCurrent);
+
   useEffect(() => {
     dispatch(authOperations.getCurrentUser());
   }, [dispatch]);
 
   return (
-    <Container>
-      <ToastContainer autoClose={3000} />
-      <AppBar />
-      <Suspense fallback={null}>
-        <Switch>
-          <Route exact path="/" component={HomeView} />
-          <Route path="/register" component={RegisterView} />
-          <Route path="/login" component={LoginView} />
-          <Route path="/contacts" component={ContactsView} />
-        </Switch>
-      </Suspense>
-      {/* <Title title="Phonebook" />
-      <Form />
-      <Title title="Contacts" />
-      <Filter />
-      <ContactList /> */}
-    </Container>
+    !isFetchingCurrentUser && (
+      <Container>
+        <ToastContainer autoClose={3000} />
+        <AppBar />
+        <Suspense fallback={null}>
+          <Switch>
+            <PublicRoute exact path="/">
+              <HomeView />
+            </PublicRoute>
+
+            <PublicRoute exact path="/register" restricted>
+              <RegisterView />
+            </PublicRoute>
+
+            <PublicRoute exact path="/login" restricted redirectTo="/contacts">
+              <LoginView />
+            </PublicRoute>
+
+            <PrivateRoute path="/contacts" redirectTo="/login">
+              <ContactsView />
+            </PrivateRoute>
+          </Switch>
+        </Suspense>
+      </Container>
+    )
   );
 }
