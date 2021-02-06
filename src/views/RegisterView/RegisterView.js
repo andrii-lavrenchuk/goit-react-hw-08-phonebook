@@ -1,17 +1,11 @@
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { authOperations } from '../../redux/auth';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 
-const styles = {
-  form: {
-    width: 320,
-  },
-  label: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginBottom: 15,
-  },
-};
+import s from './RegisterView.module.css';
 
 export default function RegisterView() {
   const dispatch = useDispatch();
@@ -34,6 +28,14 @@ export default function RegisterView() {
 
   const handleSubmit = e => {
     e.preventDefault();
+
+    if (name.trim() === '' || email.trim() === '' || password.trim() === '') {
+      toast.info('Please, fill all fields');
+      return;
+    } else if (password.length < 7) {
+      toast.error('Password must contains at least 7 characters');
+      return;
+    }
     dispatch(authOperations.register({ name, email, password }));
     setName('');
     setEmail('');
@@ -42,35 +44,43 @@ export default function RegisterView() {
 
   return (
     <div>
-      <h1>Страница регистрации</h1>
+      <h1> Sign up</h1>
 
-      <form onSubmit={handleSubmit} style={styles.form} autoComplete="off">
-        <label style={styles.label}>
-          Имя
-          <input type="text" name="name" value={name} onChange={handleChange} />
-        </label>
+      <form onSubmit={handleSubmit} className={s.form} autoComplete="off">
+        <TextField
+          label="Name"
+          helperText="*Required"
+          variant="outlined"
+          className={s.field}
+          type="text"
+          name="name"
+          value={name}
+          onChange={handleChange}
+        />
+        <TextField
+          label="Email"
+          helperText="*Required"
+          variant="outlined"
+          className={s.field}
+          type="email"
+          name="email"
+          value={email}
+          onChange={handleChange}
+        />
+        <TextField
+          label="Password"
+          helperText="*Required"
+          variant="outlined"
+          className={s.field}
+          type="password"
+          name="password"
+          value={password}
+          onChange={handleChange}
+        />
 
-        <label style={styles.label}>
-          Почта
-          <input
-            type="email"
-            name="email"
-            value={email}
-            onChange={handleChange}
-          />
-        </label>
-
-        <label style={styles.label}>
-          Пароль
-          <input
-            type="password"
-            name="password"
-            value={password}
-            onChange={handleChange}
-          />
-        </label>
-
-        <button type="submit">Зарегистрироваться</button>
+        <Button variant="contained" color="primary" type="submit">
+          Sign up
+        </Button>
       </form>
     </div>
   );
