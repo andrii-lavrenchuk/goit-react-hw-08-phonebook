@@ -4,4 +4,9 @@ const getUsername = state => state.auth.user.name;
 
 const getIsFetchingCurrent = state => state.auth.isFetchingCurrentUser;
 
-export default { getIsAuthenticated, getUsername, getIsFetchingCurrent };
+// eslint-disable-next-line import/no-anonymous-default-export
+export default {
+  getIsAuthenticated,
+  getUsername,
+  getIsFetchingCurrent,
+};
